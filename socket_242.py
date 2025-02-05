@@ -1,47 +1,32 @@
-import network
-import time
+import network 
 import socket
-
+import time
 
 wf = network.WLAN(network.STA_IF)
 wf.active(True)
+wf.connect('Edwar_Wifi','Electro1')
 
-wf.connect('Edwar_Wifi', 'Electro1')
 
 while not wf.isconnected():
     print(".")
     time.sleep(1)
-    
-    
-print("Conectado a:", wf.ifconfig())
 
-s = socket.socket()
-s.bind(('192.168.26.180', 2024))
-print("Crear el socket")
+print("conectado:", wf.ifconfig())
 
-s.listen(10)
 
-print("Escuchando hasta conexion")
-(sc,addr) = s.accept()
-print ("Se conecto:" , addr)
+sc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sc.bind((wf.ifconfig()[0], 2024))
+sc.listen(5)
+
+print("Esperando conexiones")
+
+(sc, addr) = sc.accept()
+print('Cliente conectado de', addr)
+
 
 while True:
-    dato = sc.recv(32)
-    print(dato.decode())
+    data = sc.recv(64).decode('utf-8')
+    print(data.encode('utf-8'))
     
- 
-s.close() 
-
-
-
-
-
-
-
-
-
-
-
-
-
+sc.close()   
 
